@@ -39,20 +39,36 @@ router.get('/products', (req, res) => {
 
 // get one product
 router.get('/products/:id', (req, res) => {
-  // find a single product by its `id`
-  // be sure to include its associated Category and Tag data
+  Product.findOne({
+    where: {
+      id: req.params.id
+    },
+    attributes: [
+      'id',
+      'product_name',
+      'price',
+      'stock',
+      'category_id'
+    ],
+    include: [
+      {
+        model: Category,
+        attributes: ['category_name']
+      }
+    ]
+  })
+    .then(dbProductData => res.json(dbProductData))
+    .catch(error => {
+      console.log(error)
+      res.status(500).json(error)
+    })
+
 })
+
 
 // create new product
 router.post('/products', (req, res) => {
-  /* req.body should look like this...
-    {
-      product_name: "Basketball",
-      price: 200.00,
-      stock: 3,
-      tagIds: [1, 2, 3, 4]
-    }
-  */
+
   Product.create(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
@@ -118,7 +134,22 @@ router.put('/products/:id', (req, res) => {
 })
 
 router.delete('/products/:id', (req, res) => {
-  // delete one product by its `id` value
+  Product.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(dbProductData => {
+      if (!dbProductData) {
+        res.status(404).json({ message: 'There are no products with this ID' });
+        return;
+      }
+      res.json(dbProductData)
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json(error)
+    })
 })
 
 module.exports = router
