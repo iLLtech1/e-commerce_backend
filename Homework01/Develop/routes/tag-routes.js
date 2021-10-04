@@ -11,21 +11,23 @@ router.get('/tags', (req, res) => {
       'id',
       'tag_name'
     ],
-    include: [
-      {
-        model: Tag,
-        attributes: ['tag_name'],
-        through: Product,
-        as: 'tags'
-      },
-      {
-        model: Tag,
-        attributes: [
-          'id',
-          'category_name'
-        ]
-      }
-    ]
+    // include: [
+    //   {
+    //     model: Tag,
+    //     attributes: ['tag_name'],
+    //     through: Tag,
+    //     as: 'tags'
+    //   },
+    //   {
+    //     model: Tag,
+    //     attributes: [
+    //       'id',
+    //       'tag_name'
+    //     ]
+    //   }
+    // ]
+  })
+    .then(tags => res.json(tags))
 })
 
 router.get('/tags/:id', (req, res) => {
@@ -42,11 +44,11 @@ router.get('/tags/:id', (req, res) => {
     include: [
       {
         model: Tag,
-        attributes: ['category_name']
+        attributes: ['tag_name']
       }
     ]
   })
-    .then(dbProductData => res.json(dbProductData))
+    .then(dbTagData => res.json(dbTagData))
     .catch(error => {
       console.log(error)
       res.status(500).json(error)
@@ -65,4 +67,4 @@ router.delete('/tags/:id', (req, res) => {
   // delete on tag by its `id` value
 })
 
-module.exports = router
+module.exports = router;
