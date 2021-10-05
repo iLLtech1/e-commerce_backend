@@ -73,7 +73,7 @@ router.put('/categories/:id', (req, res) => {
       id: req.params.id
     }
   })
-  .then(dbCategoryData=> {
+  .then(dbCategoryData => {
     if(!dbCategoryData) {
       res.status(404).json({message: 'There are no categories with this ID'});
       return;
